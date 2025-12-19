@@ -490,7 +490,7 @@ class PintPulsar(BasePulsar):
     
     def _get_ssbobs(self, toas, model):
         """Get the SSB to observatory vector."""
-        return self._get_ssb_lsec(toas, "ssb_obs_pos")
+        return toas.table["ssb_obs_pos"].to(u.lightsecond).value
 
 
 class Tempo2Pulsar(BasePulsar):
