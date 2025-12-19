@@ -538,6 +538,7 @@ class Tempo2Pulsar(BasePulsar):
         self._pos = self._get_pos()
         self._planetssb = self._get_planetssb(t2pulsar)
         self._sunssb = self._get_sunssb(t2pulsar)
+        self._ssbobs = self._get_ssbobs(t2pulsar)
 
         # gather DM/DMX information if available
         self._set_dm(t2pulsar)
@@ -633,6 +634,9 @@ class Tempo2Pulsar(BasePulsar):
                 sunssb[:, 3:] = utils.ecl2eq_vec(sunssb[:, 3:])
         return sunssb
 
+    def _get_ssbobs(self, t2pulsar):
+        return (t2pulsar.observatory_earth + t2pulsar.earth_ssb)[:, :3]
+
     # infrastructure for sharing Pulsar objects among processes
     # (currently Tempo2Pulsar only)
     # the Pulsar deflater will copy select numpy arrays to SharedMemory,
@@ -675,7 +679,7 @@ class Tempo2Pulsar(BasePulsar):
 
 class FeatherPulsar:
     columns = ["toas", "stoas", "toaerrs", "residuals", "freqs", "backend_flags", "telescope"]
-    vector_columns = ["Mmat", "sunssb", "pos_t"]
+    vector_columns = ["Mmat", "sunssb", "ssbobs", "pos_t"]
     tensor_columns = ["planetssb"]
     # flags are done separately
     metadata = ["name", "dm", "dmx", "pdist", "pos", "phi", "theta", "fitpars", "setpars", "_pdist"]
