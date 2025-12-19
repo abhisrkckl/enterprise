@@ -316,6 +316,11 @@ class BasePulsar(object):
     def sunssb(self):
         """Return sun position vector at all timestamps"""
         return self._sunssb[self._isort, :]
+    
+    @property
+    def ssbobs(self):
+        """Return the SSB to observatory position vector at all timestamps"""
+        return self._ssbobs[self._isort, :]
 
     @property
     def telescope(self):
@@ -377,6 +382,7 @@ class PintPulsar(BasePulsar):
         self._pos = self._get_pos()
         self._planetssb = self._get_planetssb(toas, model)
         self._sunssb = self._get_sunssb(toas, model)
+        self._ssbobs = self._get_ssbobs(toas, model)
 
         which_astrometry = (
             "AstrometryEquatorial" if "AstrometryEquatorial" in model.components else "AstrometryEcliptic"
@@ -481,6 +487,10 @@ class PintPulsar(BasePulsar):
             #     sunssb[:, :3] = utils.ecl2eq_vec(sunssb[:, :3])
             # #     sunssb[:, 3:] = utils.ecl2eq_vec(sunssb[:, 3:])
         return sunssb
+    
+    def _get_ssbobs(self, toas, model):
+        """Get the SSB to observatory vector."""
+        return self._get_ssb_lsec(toas, "ssb_obs_pos")
 
 
 class Tempo2Pulsar(BasePulsar):
